@@ -2,6 +2,7 @@
 
 #include "hw/usb.h"
 #include "desc.h"
+#include "desc-msos.h"
 #include "trace.h"
 
 /* ------------------------------------------------------------------ */
@@ -511,7 +512,7 @@ void usb_desc_init(USBDevice *dev)
     }
     if (desc->msos && (dev->flags & (1 << USB_DEV_FLAG_MSOS_DESC_ENABLE))) {
         dev->flags |= (1 << USB_DEV_FLAG_MSOS_DESC_IN_USE);
-        usb_desc_set_string(dev, 0xee, "MSFT100Q");
+        usb_desc_set_string(dev, MSOS_DESC_INDEX, "MSFT100");
     }
     usb_desc_setdefaults(dev);
 }
@@ -605,6 +606,14 @@ int usb_desc_string(USBDevice *dev, int index, uint8_t *dest, size_t len)
         dest[2] = 0x09;
         dest[3] = 0x04;
         return 4;
+    }
+
+    if (index == MSOS_DESC_INDEX) {
+        /* language ids */
+        if (dev->flags & (1 << USB_DEV_FLAG_MSOS_DESC_IN_USE)) {
+            str = usb_desc_get_string(dev, index);
+            return usb_desc_msos_str_desc(str, dest, 0x00);
+        }
     }
 
     str = usb_desc_get_string(dev, index);
