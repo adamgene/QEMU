@@ -33,7 +33,6 @@ enum {
     STR_SERIALNUMBER,
     STR_CONFIG_FULL,
     STR_CONFIG_HIGH,
-    STR_CONFIG_SUPER,
 };
 
 static const USBDescStrings desc_strings = {
